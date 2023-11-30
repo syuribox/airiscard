@@ -6,7 +6,7 @@ let img_temp = [];
 let img_card = [];
 let img_end;
 function preload() {
-  img_title = loadImage('./img/title.png');
+  img_title = loadImage('./img/title2.png');
   img_end      = loadImage('./img/end.png');
   img_temp[1]  = loadImage('./img/001_maria.png');
   img_temp[2]  = loadImage('./img/002_enal.png');
@@ -16,6 +16,8 @@ function preload() {
   img_temp[6]  = loadImage('./img/006_orange_cat.png');
   img_temp[7]  = loadImage('./img/007_orange_dog.png');
   img_temp[8]  = loadImage('./img/008_white_dog.png');
+  img_temp[40] = loadImage('./img/040_apple.png');
+  img_temp[41] = loadImage('./img/041_golden_apple.png');
   img_temp[50] = loadImage('./img/050_grass.png');
   img_temp[51] = loadImage('./img/051_harb.png');
   img_temp[52] = loadImage('./img/052_portion.png');
@@ -71,15 +73,17 @@ let battele_data = {
            {name:'トラ猫Lv1', imgid:6, max_hp: 80, hp:80, attack:40, def:15, hit:10, skill: ['爪攻撃'],  agi:20, add_y:0, org:-1},]
 }
 const items_data = [
-  ['記念コイン',     58, ['なし', 0], 'クリア記念コイン。'],
-  ['雑草',           50, ['回復', 40], 'HPを40回復する。'],
-  ['薬草',           51, ['回復', 80], 'HPを80回復する。'],
-  ['低級ポーション', 52, ['回復', 120], 'HPを120回復する。'],
-  ['中級ポーション', 53, ['回復', 160], 'HPを160回復する。'],
-  ['上級ポーション', 54, ['回復', 200], 'HPを200回復する。'],
-  ['スクロール【雷】', 55, ['全体攻撃', 40], '40固定全体ダメージ。\n神の怒り雷撃を撃つ。'],
-  ['スクロール【氷】', 56, ['全体攻撃', 80], '80固定全体ダメージ。\n絶対零度の氷結攻撃。'],
-  ['スクロール【火】', 57, ['全体攻撃', 120], '120固定全体ダメージ。\n紅蓮の炎で焼き尽くす。'],
+  ['★3 記念コイン',     58, ['なし', 0], 'クリア記念コイン。\nおめでとうございます。\nなにかいいことがありそう。\nヨハン16世即位記念金貨。'],
+  ['★0 雑草',           50, ['回復', 40], 'HPを40回復する。\n戦闘不能時には効果がない。\nその辺に生えている葉っぱだ。'],
+  ['★1 薬草',           51, ['回復', 80], 'HPを80回復する。\n戦闘不能時には効果がない。\n少し苦い葉っぱ。煎じて飲む。'],
+  ['★2 低級ポーション', 52, ['回復', 120], 'HPを120回復する。\n戦闘不能時には効果がない。\n薬草を精製したもの。'],
+  ['★3 中級ポーション', 53, ['回復', 160], 'HPを160回復する。\n戦闘不能時には効果がない。\n薬草をさらに精製したもの。'],
+  ['★4 上級ポーション', 54, ['回復', 200], 'HPを200回復する。\n戦闘不能時には効果がない。\n特別な薬草を精製したもの。\n戦闘不能時には効果がない。'],
+  ['★2 巻物【雷】', 55, ['全体攻撃', 40], '40固定全体ダメージ。\n神の怒り雷撃を撃つ。'],
+  ['★3 巻物【氷】', 56, ['全体攻撃', 80], '80固定全体ダメージ。\n絶対零度の氷結攻撃。'],
+  ['★4 巻物【火】', 57, ['全体攻撃', 120], '120固定全体ダメージ。\n紅蓮の炎で焼き尽くす。'],
+  ['★1 リンゴ', 40, ['回復', 60], 'HPを60回復する。\n赤く熟しているリンゴ。'],
+  ['★5 黄金リンゴ', 41, ['蘇生', 120], 'HPを100回復する。\n戦闘不能から復帰する。\n珍しい黄金のリンゴ。'],
 ];
 let click_on = -1;
 let click_off = -1;
@@ -129,7 +133,7 @@ function draw() {
   fill(0);
   textSize(12);
   textAlign(LEFT);
-  text('エアイズ王国：カートバトル v0.01', 30, 14);
+  text('エアイズ王国：カートバトル v0.02.20231130', 30, 14);
   textAlign(CENTER);
   text('copyright 2023 syuribox, Aipictors', width / 2, height - 8);
 }
@@ -159,7 +163,7 @@ function draw_title(){
   text('エアイズ王国　\n　　：カードバトル', w, h);
 }
 let mikata_data = ['', ['マリア', 1], ['黒猫', 4], ['白猫', 5], ['トラ猫', 6]];
-let items = [[2,3]];
+let items = [[2,3], [6,1]];
 let battle_map = 0;
 let battle_mode = 0;
 let battle_count = 0;
@@ -216,7 +220,7 @@ function draw_battle(){
     return (x <= click_x && click_x < x + width &&
       y <= click_y && click_y < y + height);
   }
-  if( battle_mode != 100) {
+  if (battle_mode != 100) {
     textSize(20);
     textAlign(LEFT);
     fill(0);
@@ -266,12 +270,12 @@ function draw_battle(){
     fill(color(150,170,255));
     rect(10, top2, bw, bh);
     fill(color(150,170,200));
-    rect(left2, top2, bw, bh);
+//    rect(left2, top2, bw, bh);
     fill(50);
     text('[戦う]', width / 4, 500);
     text('[オート]', width / 4 * 3, 500);
     text('[アイテム]', width / 4, 570);
-    text('[逃げる(未)]', width / 4 * 3, 570);
+//    text('[逃げる(未)]', width / 4 * 3, 570);
     const w = (width - 60) / 2;
     const h = 70;
     if( if_rect(10, top1, w, h)) {
@@ -289,24 +293,26 @@ function draw_battle(){
     }
   }
   if (battle_mode == 99) {
-    if (is_win && battle_count == 0) {
-      battle_count = 1;
+    if(0 <= battle_count){
+      battle_count++;
+    }
+    if (is_win && battle_count == 60) {
       const reward = [
         [1, 1],
-        [2, 2],
+        [2,-2, [2, 2, 2, 2, 2, 2, 2, 1, 9]],
         [3,-1, [['エルナ', 2], 2], 0],
-        [4,-2, [2, 2, 6]],
-        [4,-2, [2, 6, 7, 8]],
+        [4,-2, [2, 2, 2, 2, 2, 6, 6, 10]],
+        [5,-2, [2, 6, 7, 8]],
         [6,-1, [['サーナ', 3], 3], 0],
-        [7,-2, [6,7,8]],
-        [8, 0],
+        [7,-2, [6, 7, 8]],
+        [8,-2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 5]]
       ];
       if (reward[battle_map][1] == -1){
         let z = reward[battle_map][2];
         let charc = z[0];
         let name = charc[1];
         let char_idx = z[1];
-        if (mikata_data[char_idx][1] != name){
+        if (mikata_data[char_idx][1] != name) {
           mikata_data[char_idx] = charc;
           item_use_index  = char_idx;
           mode_card_index =char_idx;
@@ -318,12 +324,12 @@ function draw_battle(){
           mode_card_index = items_data[item_index][1];
           battle_mode = 9;
         }
-      } else if(reward[battle_map][1] == -2){
-        let item_index = random(reward[battle_map][2]);
-        add_item(item_index);
-        item_use_index  = item_index;
-        mode_card_index = items_data[item_index][1];
-        battle_mode = 9;
+      }else if(reward[battle_map][1] == -2){
+          let item_index = random(reward[battle_map][2]);
+          add_item(item_index);
+          item_use_index  = item_index;
+          mode_card_index = items_data[item_index][1];
+          battle_mode = 9;
       } else {
         let item_index = reward[battle_map][1];
         add_item(item_index);
@@ -332,25 +338,39 @@ function draw_battle(){
         battle_mode = 9;
       }
     }
-    textSize(20);
-    textAlign(CENTER);
-    fill(color(150,170,255));
-    rect(30, 540, width - 60, 70);
-    fill(50);
-    text(is_win ? '[次へ]' : '[再戦]', width / 2, 580);
-    if (if_rect(30, 540, width - 60, 70)) {
-      if (is_win) {
-        battle_map++;
-        if(battle_map == 8){
-          battle_map = 0; // とりあえずループ
-          battle_mode = 100;
+    if(60 < battle_count){
+      battle_count = 9999;
+    }
+    if(battle_count == 9999){
+      textSize(20);
+      textAlign(CENTER);
+      fill(color(150,170,255));
+      rect(30, 540, width - 60, 70);
+      fill(50);
+      text(is_win ? '[次へ]' : '[再戦]', width / 2, 580);
+      if (if_rect(30, 540, width - 60, 70)) {
+        if (is_win) {
+          battle_map++;
+          if(battle_map == 8){ // 最後の面
+            click_on = -1;
+            battle_mode = 100;
+            battle_count = 0;
+          }
+        }
+        if (battle_mode !== 100) {
+          setup_map();
         }
       }
-      setup_map();
     }
   } else if (battle_mode == 100) {
-    if(0 <= click_on){
-      battle_mode = 0;
+    if(battle_count < 30){
+      battle_count++;
+    }else{
+      if(0 <= click_on){
+        battle_map = 0; // とりあえずループ
+        battle_mode = 0;
+        setup_map();
+      }
     }
   }
   if (battle_mode == 1 || battle_mode == 2) {
@@ -402,7 +422,7 @@ function draw_battle(){
         a.add_y = -10;
         t.add_y = 10;
         effect_on = 0;
-        effect_x = 80 + target * 100;
+        effect_x = 10 + target * (width - 20 - 6);
         effect_y = turn_mode ? 110 : 320;
         let damage = parseInt(Math.max(5, a.attack - t.def));
         let hit_base = 70 + (a.hit - t.agi) / 2;
@@ -434,7 +454,7 @@ function draw_battle(){
           battle_text = a.name + 'の攻撃。\n' + t.name + 'は回避した。\n';
         }
         let hit_anime = {
-          x:(10 + ((width - 20) / 4) * target),
+          x:(15 + ((width - 20) / 4) * target),
           y:turn_mode ? 140: 350,
           text:text_,
           color:colors,
@@ -516,7 +536,7 @@ function draw_battle(){
         rect(45, 100 + 60 * i, width - 90, 55);
         fill(0);
         textAlign(LEFT);
-        textSize(20);
+        textSize(15);
         text(text_str, 105, 100 + 60 * i + 30);
         textAlign(RIGHT);
         text(count_str, width - 50, 100 + 60 * i + 30);
@@ -584,7 +604,10 @@ function draw_battle(){
             }else{
               continue;
             }
-          }else if (item[2][0]['全体攻撃']) {
+          } else if (item[2][0] == '蘇生') {
+            text_ = '+' + item[2][1];
+            d.mikata[target].hp = parseInt(Math.min(d.mikata[target].max_hp, d.mikata[target].hp + item[2][1]));
+          }else if (item[2][0] == '全体攻撃') {
             is_teki = true;
             colors = 'red';
             text_ = '-' + item[2][1];
@@ -597,7 +620,7 @@ function draw_battle(){
             break;
           }
           let hit_anime = {
-            x:(10 + ((width - 20) / 4) * target),
+            x:(15 + ((width - 20) / 4) * target),
             y:is_teki ? 140: 350,
             text:text_,
             color:colors,
@@ -643,8 +666,6 @@ function draw_battle(){
       const base_y = (height - base_h) / 2;
       image(img_card[card_type], base_x, base_y, base_w, base_h);
       image(img_temp[mode_card_index], base_x + 64 * ratio, base_y + 105 * ratio, 512 * ratio, 512 * ratio);
-      fill(0);
-      textAlign(LEFT);
       let title = '';
       if (card_type == 0){
         title= items_data[item_use_index][0];
@@ -653,6 +674,9 @@ function draw_battle(){
         title = card_base[item_use_index][0];
         caption = card_base[item_use_index][8];
       }
+      fill(0);
+      textAlign(LEFT);
+      textSize(13);
       text(title, base_x + 70 * ratio, base_y + 62 * ratio);
       text(caption, base_x + 70 * ratio, base_y + 668 * ratio);
     }
@@ -678,8 +702,11 @@ function draw_battle(){
       text_win = 'LOSE!';
     }
     text_futi(text_win, width / 2, height / 2, text_fill, 0);
-  }else if( battle_mode == 100 ){
-    img(img_end, 0, 30, width, height - 60, 0, 0, img_end.width, img_end.width, CONTAIN);
+  }else if (battle_mode == 100) {
+    image(img_end, 0, 30, width, height - 60, 0, 0, img_end.width, img_end.height, CONTAIN);
+    textSize(15);
+    text_futi('Congratulations!!', width / 2, 100, 255, 0);
+    text_futi('おめでとうございます', width / 2, 120, 255, 0);
   }
   draw_battle_splite();
 }
