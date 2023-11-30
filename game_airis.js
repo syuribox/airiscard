@@ -318,7 +318,7 @@ function draw_battle(){
           mode_card_index =char_idx;
           battle_mode = 8;
         }else{
-          let item_index = reward[battle_map][4];
+          let item_index = reward[battle_map][3];
           add_item(item_index);
           item_use_index  = item_index;
           mode_card_index = items_data[item_index][1];
