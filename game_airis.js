@@ -1,5 +1,5 @@
-﻿function setup() {
-  new Canvas(480, 640);
+function setup() {
+  new Canvas(360, 640);
 }
 let img_title;
 let img_temp = [];
@@ -71,15 +71,15 @@ let battele_data = {
            {name:'トラ猫Lv1', imgid:6, max_hp: 80, hp:80, attack:40, def:15, hit:10, skill: ['爪攻撃'],  agi:20, add_y:0, org:-1},]
 }
 const items_data = [
-  ['記念コイン', 58, 0, 'クリア記念コイン。'],
-  ['雑草', 50, 40, 'HPを40回復する。'],
-  ['薬草', 51, 80, 'HPを80回復する。'],
-  ['低級ポーション', 52, 120, 'HPを120回復する。'],
-  ['中級ポーション', 53, 160, 'HPを160回復する。'],
-  ['上級ポーション', 54, 200, 'HPを200回復する。'],
-  ['スクロール【雷】', 55,  40, '40固定全体ダメージ。'],
-  ['スクロール【氷】', 56,  80, '80固定全体ダメージ。'],
-  ['スクロール【火】', 57, 120, '120固定全体ダメージ。'],
+  ['記念コイン',     58, ['なし', 0], 'クリア記念コイン。'],
+  ['雑草',           50, ['回復', 40], 'HPを40回復する。'],
+  ['薬草',           51, ['回復', 80], 'HPを80回復する。'],
+  ['低級ポーション', 52, ['回復', 120], 'HPを120回復する。'],
+  ['中級ポーション', 53, ['回復', 160], 'HPを160回復する。'],
+  ['上級ポーション', 54, ['回復', 200], 'HPを200回復する。'],
+  ['スクロール【雷】', 55, ['全体攻撃', 40], '40固定全体ダメージ。\n神の怒り雷撃を撃つ。'],
+  ['スクロール【氷】', 56, ['全体攻撃', 80], '80固定全体ダメージ。\n絶対零度の氷結攻撃。'],
+  ['スクロール【火】', 57, ['全体攻撃', 120], '120固定全体ダメージ。\n紅蓮の炎で焼き尽くす。'],
 ];
 let click_on = -1;
 let click_off = -1;
@@ -135,7 +135,7 @@ function draw() {
 }
 
 function draw_title(){
-  textSize(48);
+  textSize(35);
   textAlign(CENTER);
   image(img_title, 0, 15, width, height - 20, 0, 0, img_title.width, img_title.height, CONTAIN);
   const w = width / 2;
@@ -163,6 +163,7 @@ let items = [[2,3]];
 let battle_map = 0;
 let battle_mode = 0;
 let battle_count = 0;
+let battle_count2 = 0;
 let turn_mode = true;
 let effect_on = -1;
 let effect_x = 0;
@@ -174,6 +175,7 @@ let is_win = false;
 let battle_text = '';
 let item_scroll = 0;
 let item_use_index = -1;
+let item_mode = 0;
 let mode_card_index = -1;
 function setup_map(){
   battle_mode = 0;
@@ -189,6 +191,7 @@ function setup_map(){
   battle_text = '';
   item_scroll = 0;
   item_use_index = -1;
+  item_mode = 0;
   mode_card_index = -1;
   let load_char = function(array){
     const name = array[0];
@@ -221,19 +224,21 @@ function draw_battle(){
     textSize(15);
     let draw_battele_card = function(card, x, y, hp) {
       const y_ = y + card.add_y;
+      const size = (width - 20 - 2 * 3) / 4;
       textAlign(CENTER);
-      text(card.name, x + 30, y);
+      text(card.name, x + size / 2, y);
       textAlign(LEFT);
       if (card.hp <= 0) {
         fill('red');
       }else{
         fill(0);
       }
-      text('HP：' + card.hp + '/' + card.max_hp, x - 20, y + 20);
+      textSize(15);
+      text('' + card.hp + '/' + card.max_hp, x, y + 20);
       fill(0);
-      image(img_temp[card.imgid], x - 28, y_ + 40, 96, 96);
+      image(img_temp[card.imgid], x, y_ + 40, size, size);
       if (battle_mode == 0){
-        if( if_rect(x - 28, y_ + 40, 96, 96)) {
+        if( if_rect(x - 15, y_ + 40, size, size)) {
           mode_card_index = card.org;
           item_use_index = card.org;
           battle_mode = 7;
@@ -241,50 +246,49 @@ function draw_battle(){
         }
       }
     }
-    draw_battele_card(d.teki[0], 60, 60);
-    draw_battele_card(d.teki[1], 160, 60);
-    draw_battele_card(d.teki[2], 260, 60);
-    draw_battele_card(d.teki[3], 360, 60);
-    draw_battele_card(d.mikata[0], 60, 270);
-    draw_battele_card(d.mikata[1], 160, 270);
-    draw_battele_card(d.mikata[2], 260, 270);
-    draw_battele_card(d.mikata[3], 360, 270);
+    for(let i = 0; i < 4; i++){
+      let x_ = 10 + ((width - 20) / 4) * i;
+      draw_battele_card(d.teki[i],  x_, 60);
+      draw_battele_card(d.mikata[i], x_, 270);
+    }
   }
   if (battle_mode == 0) {
-    textSize(20);
+    textSize(16);
     textAlign(CENTER);
     fill(color(150,170,255));
-    rect(20, 460, 200, 70);
-    fill(color(150,170,200));
-    rect(260, 460, 200, 70);
+    const bw = ((width - 30) / 2);
+    const bh = 70;
+    const top1 = 460;
+    const left2 = 10 + bw + 10;
+    const top2 = top1 + bh + 5;
+    rect(10, top1, bw, bh);
+    rect(left2, top1, bw, bh);
     fill(color(150,170,255));
-    rect(20, 540, 200, 70);
+    rect(10, top2, bw, bh);
     fill(color(150,170,200));
-    rect(260, 540, 200, 70);
+    rect(left2, top2, bw, bh);
     fill(50);
-    text('[戦う]', 120, 500);
-    text('[必殺技(未)]', 360, 500);
-    text('[アイテム](閲覧)', 120, 580);
-    text('[逃げる(未)]', 360, 580);
-    if( if_rect(20, 460, 200, 70)) {
+    text('[戦う]', width / 4, 500);
+    text('[オート]', width / 4 * 3, 500);
+    text('[アイテム]', width / 4, 570);
+    text('[逃げる(未)]', width / 4 * 3, 570);
+    const w = (width - 60) / 2;
+    const h = 70;
+    if( if_rect(10, top1, w, h)) {
+      battle_mode = 1;
+      battle_count2 = -1;
+    }
+    if( if_rect(left2, top1, w, h)) {
       battle_mode = 2;
     }
-    if( if_rect(260, 460, 200, 70)) {
-//      battle_mode = 3;
-    }
-    if( if_rect(20, 540, 200, 70)) {
+    if( if_rect(10, top2, w, h)) {
       battle_mode = 4;
     }
-    if( if_rect(260, 540, 200, 70)) {
+    if( if_rect(left2, top2, w, h)) {
 //      battle_mode = 5;
     }
   }
   if (battle_mode == 99) {
-    textSize(20);
-    textAlign(CENTER);
-    fill(color(150,170,255));
-    rect(260, 540, 200, 70);
-    fill(50);
     if (is_win && battle_count == 0) {
       battle_count = 1;
       const reward = [
@@ -328,8 +332,13 @@ function draw_battle(){
         battle_mode = 9;
       }
     }
-    text(is_win ? '[次へ]' : '[再戦]', 360, 580);
-    if (if_rect(260, 540, 200, 70)) {
+    textSize(20);
+    textAlign(CENTER);
+    fill(color(150,170,255));
+    rect(30, 540, width - 60, 70);
+    fill(50);
+    text(is_win ? '[次へ]' : '[再戦]', width / 2, 580);
+    if (if_rect(30, 540, width - 60, 70)) {
       if (is_win) {
         battle_map++;
         if(battle_map == 8){
@@ -344,10 +353,20 @@ function draw_battle(){
       battle_mode = 0;
     }
   }
-  if (battle_mode == 2) {
+  if (battle_mode == 1 || battle_mode == 2) {
     const turn_time = 60;
     let next = battle_count % turn_time;
     battle_count++;
+    if (battle_mode == 1 && next == 0) {
+      if (battle_count2 == -1) {
+        battle_count2 = 0;
+      }else if(!turn_mode && battle_count2 == 0) {
+        battle_count2 = 1;
+      }else if(turn_mode && battle_count2 == 1){
+        battle_mode = 0;
+        next = -1;
+      }
+    }
     if (next == 0) {
       let have_skill = function(skill_list, name){
         for(let i = 0; i < skill_list.length; i++){
@@ -389,7 +408,7 @@ function draw_battle(){
         let hit_base = 70 + (a.hit - t.agi) / 2;
         let hit_per = Math.max(10, Math.min(95, hit_base));
         let hit = parseInt(random(0, 100));
-        let text;
+        let text_;
         let colors;
         if( hit < hit_per ){
           let hit_point = damage;
@@ -398,26 +417,26 @@ function draw_battle(){
             hit_point *= 2;
           }
           t.hp = parseInt(Math.max(0, t.hp - hit_point));
-          text = '-' + hit_point;
+          text_ = '-' + hit_point;
           colors = 'red';
-          battale_text = a.name + 'の攻撃。\n' + t.name + 'に' + hit_point + 'のダメージ。\n';
+          battle_text = a.name + 'の攻撃。\n' + t.name + 'に' + hit_point + 'のダメージ。\n';
           if(t.hp <= 0){
-            battale_text += t.name; 
+            battle_text += t.name; 
             if(turn_mode){
-              battale_text +=  'を倒した。';
+              battle_text +=  'を倒した。';
             }else{
-              battale_text +=  'は戦闘不能になった。';
+              battle_text +=  'は戦闘不能になった。';
             }
           }
         }else{
-          text = 'miss';
+          text_ = 'miss';
           colors = '#777';
-          battale_text = a.name + 'の攻撃。\n' + t.name + 'は回避した。\n';
+          battle_text = a.name + 'の攻撃。\n' + t.name + 'は回避した。\n';
         }
         let hit_anime = {
-          x: 50 + target * 100,
+          x:(10 + ((width - 20) / 4) * target),
           y:turn_mode ? 140: 350,
-          text:text,
+          text:text_,
           color:colors,
           countdown:55
         };
@@ -446,7 +465,7 @@ function draw_battle(){
         battle_count = 0;
       }
     } else if( next == turn_time - 1) {
-      battale_text = '';
+      battle_text = '';
       for (let i = 0; i < 4; i++) {
         d.teki[i].add_y = 0;
         d.mikata[i].add_y = 0;
@@ -454,74 +473,146 @@ function draw_battle(){
     }
     textSize(20);
     textAlign(LEFT);
-    text(battale_text, 40, 500);
+    text(battle_text, 40, 500);
   } else if (battle_mode == 4) {
     // アイテム
-    const view_limit = 4; 
-    for (let i = 0; i < view_limit + 3; i++){
-      let text_str = '　　　▲';
-      let count_str = '';
-      let index = -1;
-      let card_id = -1;
-      if(i == 0){
-        if(item_scroll == 0){
-          fill(color(150,170,200));
-        }else{
+    const view_limit = 4;
+    if (item_mode == 0) {
+      for (let i = 0; i < view_limit + 3; i++){
+        let text_str = '　　　▲';
+        let count_str = '';
+        let index = -1;
+        let card_id = -1;
+        if(i == 0){
+          if(item_scroll == 0){
+            fill(color(150,170,200));
+          }else{
+            fill(color(150,170,255));
+          }
+        } else if (i == view_limit + 1){
+          text_str = '　　　▼ (' + (item_scroll + 1) + ')';
+          if ((item_scroll + 1) * view_limit < items.length) {
+            fill(color(150,170,255));
+          }else{
+            fill(color(150,170,200));
+          }
+        } else if (i == view_limit + 2){
           fill(color(150,170,255));
+          text_str = '　キャンセル';
+        } else {
+          let count = item_scroll * view_limit + i - 1;
+          if(count < items.length){
+            fill(color(150,170,255));
+            index = items[count][0];
+            text_str = items_data[index][0];
+            count_str = '' + items[count][1];
+            card_id = items_data[index][1];
+          }else{
+            index = -1;
+            fill(color(150,170,200));
+            text_str = '';
+          }
         }
-      } else if (i == view_limit + 1){
-        text_str = '　　　▼';
-        if((items.length <= item_scroll + 1) * view_limit){
-          fill(color(150,170,200));
-        }else{
-          fill(color(150,170,255));
+        rect(45, 100 + 60 * i, width - 90, 55);
+        fill(0);
+        textAlign(LEFT);
+        textSize(20);
+        text(text_str, 105, 100 + 60 * i + 30);
+        textAlign(RIGHT);
+        text(count_str, width - 50, 100 + 60 * i + 30);
+        if (0 <= card_id) {
+          image(img_temp[card_id], 50, 100 + 60 * i + 2, 55, 50);
         }
-      } else if (i == view_limit + 2){
-        fill(color(150,170,255));
-        text_str = '　　キャンセル';
-      } else {
-        let count = item_scroll * view_limit + i - 1;
-        if(count < items.length){
-          fill(color(150,170,255));
-          index = items[count][0];
-          text_str = items_data[index][0];
-          count_str = '' + items[count][1];
-          card_id = items_data[index][1];
-        }else{
-          fill(color(150,170,200));
-          text_str = '';
+        let mode_card_view = false;
+        let menu_index = -1;
+        if (if_rect(50, 100 + 60 * i, 50, 50)) {
+          menu_index = i;
+          if(0 <= index){
+            item_use_index = index;
+            mode_card_index = card_id;
+            mode_card_view = true;
+          }
+        }
+        if (if_rect(100, 100 + 60 * i, width - 90, 55)) {
+          menu_index = i;
+          if(0 <= index){
+            item_use_index = index;
+            item_mode = 1; // アイテム選択
+            battle_count = 0;
+          }
+        }
+        if (menu_index == 0) {
+          if (0 < item_scroll) {
+            item_scroll--;
+          }
+        } else if (menu_index == view_limit + 1) {
+          if ((item_scroll + 1) * view_limit < items.length) {
+            item_scroll++;
+          }
+        } else if (menu_index == view_limit + 2) {
+          // キャンセル
+          battle_mode = 0;
+          item_scroll = 0;
+          item_use_index = -1;
+          item_mode == 0;
+        }else if (mode_card_view) {
+          battle_mode = 6;
+          click_on = -1;
         }
       }
-      rect(45, 100 + 60 * i, width - 90, 55);
-      fill(0);
-      textAlign(LEFT);
+    } else if(item_mode == 1) {
+      battle_count++;
+      if (battle_count == 1) {
+        for (let i = 0; i < items.length; i++) {
+          if (items[i][0] == item_use_index) {
+            items[i][1]--;
+            if (items[i][1] <= 0) {
+              items.splice(i, 1);
+              break;
+            }
+          }
+        }
+        let item = items_data[item_use_index];
+        let is_teki = false;
+        let colors = 'green';
+        let text_ = '';
+        for (let target = 0; target < 4; target++) {
+          if (item[2][0] == '回復') {
+            text_ = '+' + item[2][1];
+            if(0 < d.mikata[target].hp){
+              d.mikata[target].hp = parseInt(Math.min(d.mikata[target].max_hp, d.mikata[target].hp + item[2][1]));
+            }else{
+              continue;
+            }
+          }else if (item[2][0]['全体攻撃']) {
+            is_teki = true;
+            colors = 'red';
+            text_ = '-' + item[2][1];
+            if(0 < d.teki[target].hp){
+              d.teki[target].hp = parseInt(Math.max(0, d.teki[target].hp - item[2][1]));
+            }else{
+              continue;
+            }
+          }else{
+            break;
+          }
+          let hit_anime = {
+            x:(10 + ((width - 20) / 4) * target),
+            y:is_teki ? 140: 350,
+            text:text_,
+            color:colors,
+            countdown:55
+          };
+          hit_damages.push(hit_anime);
+        }
+      }
       textSize(20);
-      text(text_str, 105, 100 + 60 * i + 30);
-      textAlign(RIGHT);
-      text(count_str, width - 50, 100 + 60 * i + 30);
-      if (0 <= card_id) {
-        image(img_temp[card_id], 50, 100 + 60 * i + 2, 55, 50);
-      }
-      let mode_card_view = false;
-      let menu_index = -1;
-      if( if_rect(50, 100 + 60 * i, 50, 50)) {
-        menu_index = i;
-        item_use_index = index;
-        mode_card_index = card_id;
-        mode_card_view = true;
-      }
-      if( if_rect(100, 100 + 60 * i, width - 90, 50)) {
-        menu_index = i;
-        item_use_index = index;
-      }
-      if( menu_index == view_limit + 2) {
-        // キャンセル
+      textAlign(LEFT);
+      text(battle_text, 40, 500);
+      if(70 < battle_count){
+        battle_count = 0;
         battle_mode = 0;
-        items_scroll = 0;
-        item_use_index = -1;
-      }else if (mode_card_view) {
-        battle_mode = 6;
-        click_on = -1;
+        item_mode = 0;
       }
     }
   } else if (6 <= battle_mode && battle_mode <= 9) {
@@ -545,7 +636,7 @@ function draw_battle(){
       } else if(battle_mode == 9) {
         card_type = 0;
       }
-      const base_w = 350;
+      const base_w = width - 40;
       const base_h = base_w * 1.5;
       const ratio = base_w / 640;
       const base_x = (width - base_w) / 2;
