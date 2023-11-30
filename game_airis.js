@@ -27,7 +27,7 @@ function preload() {
   img_temp[58] = loadImage('./img/058_clear_coin.png');
   img_temp[60] = loadImage('./img/060_green_orge.png');
   img_card[0]  = loadImage('./img/card_base_green.png');
-  img_card[1]  = loadImage('./img/card_base_red');
+  img_card[1]  = loadImage('./img/card_base_red.png');
 };
 const card_base = [
 //name,    img, _hp, at, def,hit agi skill
