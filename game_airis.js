@@ -422,7 +422,7 @@ function draw_battle(){
         a.add_y = -10;
         t.add_y = 10;
         effect_on = 0;
-        effect_x = 10 + target * (width - 20 - 6);
+        effect_x = 10 + (target + 1) * ((width - 20 - 6)　/ 4;
         effect_y = turn_mode ? 110 : 320;
         let damage = parseInt(Math.max(5, a.attack - t.def));
         let hit_base = 70 + (a.hit - t.agi) / 2;
