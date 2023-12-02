@@ -1,5 +1,5 @@
 function setup() {
-  new Canvas(360, 640);
+  new Canvas(360, 480);
 }
 let img_title;
 let img_temp = [];
@@ -16,6 +16,7 @@ function preload() {
   img_temp[6]  = loadImage('./img/006_orange_cat.png');
   img_temp[7]  = loadImage('./img/007_orange_dog.png');
   img_temp[8]  = loadImage('./img/008_white_dog.png');
+  img_temp[9]  = loadImage('./img/009_alice.png');
   img_temp[40] = loadImage('./img/040_apple.png');
   img_temp[41] = loadImage('./img/041_golden_apple.png');
   img_temp[50] = loadImage('./img/050_grass.png');
@@ -28,29 +29,74 @@ function preload() {
   img_temp[57] = loadImage('./img/057_fire_ball.png');
   img_temp[58] = loadImage('./img/058_clear_coin.png');
   img_temp[60] = loadImage('./img/060_green_orge.png');
+  img_temp[61] = loadImage('./img/061_wolf.png');
+  img_temp[62] = loadImage('./img/062_deer.png');
+  img_temp[63] = loadImage('./img/063_bear.png');
   img_card[0]  = loadImage('./img/card_base_green.png');
   img_card[1]  = loadImage('./img/card_base_red.png');
 };
+
+
+
+
+let img_bg;
+const bgimgs = [
+  './img/bk01_house.png',
+  './img/bk01_house.png',
+  './img/bk01_house.png',
+  './img/bk02_town.png',
+  './img/bk02_town.png',
+  './img/bk02_town.png',
+  './img/bk05_grass.png',
+  './img/bk05_grass.png',
+  './img/bk05_grass.png',
+  './img/bk03_forest.png',
+  './img/bk03_forest.png',
+  './img/bk03_forest.png',
+  './img/bk04_forest2.png',
+  './img/bk06_dessert.png',
+];
+const reward = [
+  [1,  1],
+  [2, -2, [2, 2, 2, 2, 2, 2, 2, 1, 9]],
+  [3, -1, ['エルナ', 2, 2], 0],
+  [4, -2, [2, 2, 2, 2, 2, 6, 6, 10]],
+  [5, -2, [2, 6, 7, 8]],
+  [6, -1, ['サーナ', 3, 3], 0],
+  [7, -2, [3, 6, 7, 8]],
+  [8, -2, [3, 6, 7, 8]],
+  [9, -2, [3, 6, 7, 8, 9, 10]],
+  [10,-2, [3, 6, 7, 8]],
+  [11,-2, [3, 6, 7, 8]],
+  [12,-1, ['アリス', 9, 4], 0],
+  [13,-2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 5]]
+];
 const card_base = [
 //name,    img, _hp, at, def,hit agi skill
   [],
   ['マリア', 1, 200, 50, 30, 20, 10, ['2回攻撃'], '剣士「マリア・ファイアランス」\nパーティー「レッドキャッツ」のリー\nダーを務める。'],
   ['エルナ', 2, 150, 70, 15, 20, 10, ['ファイアボール'], '魔法使い「エナル・ブルーサファイア」\nパーティー「レッドキャッツ」のメン\nバー。【青髪の魔女】の二つ名を持つ。'],
   ['サーナ', 3, 180, 60, 20, 20, 10, ['アロー'], '弓使い「サーナ・ゴールドラッシュ」\nパーティー「レッドキャッツ」のポー\nター。【期待の猫娘】と呼ばれている。'],
-  ['黒猫',   4, 110, 40, 15, 10, 20, ['爪攻撃'], '黒い猫ちゃんだ。かわいい。'],
-  ['白猫',   5, 100, 50, 15, 10, 20, ['爪攻撃'], '白い猫ちゃんだ。かわいい。'],
-  ['トラ猫', 6, 100, 40, 25, 10, 20, ['爪攻撃'], 'トラ猫ちゃんだ。かわいい。'],
-  ['茶犬',   7, 110, 40, 25, 15, 15, ['爪攻撃'], '茶色いワンちゃんだ。かわいい。'],
-  ['白犬',   8, 120, 40, 25, 15, 15, ['爪攻撃'], '白いワンちゃんだ。かわいい。'],
-  [],[],
+  ['黒猫',   4, 110, 40, 15, 10, 20, ['爪攻撃'], '黒い猫ちゃんだ。かわいい。\n裏路地を歩き回っているうちの一匹。\nみんなで餌をあげる地域猫だ。'],
+  ['白猫',   5, 100, 50, 15, 10, 20, ['爪攻撃'], '白い猫ちゃんだ。かわいい。\n裏路地を歩き回っているうちの一匹。みんなで餌をあげる地域猫だ。'],
+  ['トラ猫', 6, 100, 40, 25, 10, 20, ['爪攻撃'], 'トラ猫ちゃんだ。かわいい。\n裏路地を歩き回っているうちの一匹。みんなで餌をあげる地域猫だ。'],
+  ['茶犬',   7, 110, 40, 25, 15, 15, ['爪攻撃'], '茶色いワンちゃんだ。かわいい。\n裏路地を歩き回っているうちの一匹。誰かの飼い犬らしい。'],
+  ['白犬',   8, 120, 40, 25, 15, 15, ['爪攻撃'], '白いワンちゃんだ。かわいい。\n裏路地を歩き回っているうちの一匹。誰かの飼い犬らしい。'],
+  ['アリス', 9, 190, 50, 35, 20, 10, ['2回攻撃'], '姫騎士「アリス・リッテンマイア」\n【王国の秘宝】エアイズ王国第一王女。\n美しく聡明な姫様。\n冒険者としても活動している。'],
+  [],
   [],[],[],[],[],[],[],[],[],[],
   [],[],[],[],[],[],[],[],[],[],
   [],[],[],[],[],[],[],[],[],[],
   [],[],[],[],[],[],[],[],[],
-  ['雑草',   50,  80, 40, 20, 10, 10, [], 'どこにでも生えてくる雑草だ。\n草刈りをしよう。'],
-  ['薬草',   51, 100, 30, 15, 10, 10, [], 'ポーションの材料になる薬草だ。\n草刈りをしよう。'],
+  ['雑草',   50,  80, 40, 20, 10, 10, [], 'どこにでも生えてくる雑草だ。\n雑草だけにすぐ伸びる。\n草刈りをしよう。'],
+  ['薬草',   51, 100, 30, 15, 10, 10, [], 'ポーションの材料になる薬草だ。\n薬草も強くすぐ伸びる。\n草刈りをしよう。'],
   [],[],[],[],[],[],[],[],
-  ['オーガ', 60, 150, 30, 40, 20, 10, ['咆哮'], '中級モンスターだ。\n防御力やHPが高くなかなか手ごわい。'],
+  ['オーガ', 60, 250, 30, 40, 40, 10, ['咆哮'], '中級モンスター大鬼だ。\n防御力やHPが高くなかなか手ごわい。'],
+  ['ウルフ', 61, 150, 50, 10, 30, 10, ['咆哮'], '魔獣の一種、狼だ。\n攻撃力が高くなかなか手ごわい。'],
+  ['ディア', 62, 100, 20, 10, 10, 40, ['回避'], '魔獣の一種、鹿だ。\n回避能力が高くなかなか手ごわい。'],
+  ['ベア',   63, 200, 40, 30, 30, 10, ['回避'], '魔獣の一種、熊だ。\n巨体による強力な攻撃力だ。'],
+  ['スライム', 64, 90, 30, 30, 20, 50, ['回避'], '初級モンスターだ。\n小さく回避力が高い。\nあらゆる場所に住んでいる。'],
+  ['ラビット', 65, 140, 35, 10, 30, 30, ['回避'], '魔獣の一種、兎だ。\n小さいわりに攻撃力もある。\n草原に多く生息している。'],
 ];
 const battle_map_cards = [
   ['1-1.エルナ邸の裏庭(1)', ['薬草', 51], ['雑草A', 50], ['雑草B', 50], ['雑草C', 50]],
@@ -59,8 +105,13 @@ const battle_map_cards = [
   ['2-1.サーナ捜索(1)', ['黒猫', 4], ['白猫', 5], ['トラ猫', 6], ['茶犬', 7]],
   ['2-2.サーナ捜索(2)', ['黒猫', 4], ['白猫', 5], ['茶犬', 7], ['白犬', 8]],
   ['2-3.サーナ捜索(3)', ['サーナ', 3], ['黒猫', 4], ['茶犬', 7], ['白犬', 8]],
-  ['3.ドッペルゲンガー', ['Dマリア', 1], ['Dエルナ', 2], ['Dサーナ', 3], ['黒猫', 4]],
-  ['4.オーガ(ボス)', ['オーガA', 60], ['オーガB', 60], ['オーガC', 60], ['オーガD', 60]],
+  ['3-1.草原探索(1)', ['スライムA', 64], ['スライムB', 64], ['スライムC', 64], ['スライムD', 64]],
+  ['3-2.草原探索(2)', ['ラビットA', 65], ['ラビットB', 65], ['スライムA', 64], ['スライムB', 64]],
+  ['3-3.草原探索(3)', ['ウルフ', 61], ['ラビットA', 64], ['ラビットB', 64], ['スライムC', 61]],
+  ['4-1.森探索(1)', ['ディアA', 62], ['ディアB', 62], ['ディアC', 62], ['ディアD', 62]],
+  ['4-2.森探索(2)', ['ウルフA', 61], ['ウルフB', 61], ['ディアA', 62], ['ディアB', 62]],
+  ['4-3.森探索(3)', ['オーガA', 60], ['ウルフA', 61], ['ウルフB', 61], ['ウルフC', 61]],
+  ['5.ドッペルゲンガー', ['Dマリア', 1], ['Dエルナ', 2], ['Dサーナ', 3], ['ベア', 63]],
 ];
 let battele_data = {
   teki: [{name:'薬草Lv1', imgid:51,  max_hp: 200, hp:200, attack:50, def:20, hit:10, agi:10, skill: ['2回攻撃'], add_y:0, org:-1},
@@ -83,7 +134,7 @@ const items_data = [
   ['★3 巻物【氷】', 56, ['全体攻撃', 80], '80固定全体ダメージ。\n絶対零度の氷結攻撃。'],
   ['★4 巻物【火】', 57, ['全体攻撃', 120], '120固定全体ダメージ。\n紅蓮の炎で焼き尽くす。'],
   ['★1 リンゴ', 40, ['回復', 60], 'HPを60回復する。\n赤く熟しているリンゴ。'],
-  ['★5 黄金リンゴ', 41, ['蘇生', 120], 'HPを100回復する。\n戦闘不能から復帰する。\n珍しい黄金のリンゴ。'],
+  ['★5 黄金リンゴ', 41, ['蘇生', 120], 'HPを100回復する。\n戦闘不能から復帰する。\n見た目は普通だが珍しい黄金のリンゴ。'],
 ];
 let click_on = -1;
 let click_off = -1;
@@ -107,7 +158,7 @@ function draw() {
   }else{
     click_off++;
     if (0 <= click_on){
-      click_off = 0; 
+      click_off = 0;
       click_x = -1;
       click_y = -1;
     }
@@ -133,7 +184,7 @@ function draw() {
   fill(0);
   textSize(12);
   textAlign(LEFT);
-  text('エアイズ王国：カートバトル v0.02.20231130', 30, 14);
+  text('エアイズ王国：カートバトル v0.03.20231202', 30, 14);
   textAlign(CENTER);
   text('copyright 2023 syuribox, Aipictors', width / 2, height - 8);
 }
@@ -213,6 +264,7 @@ function setup_map(){
   let m = mikata_data;
   battele_data.mikata = 
     [load_char(m[1]), load_char(m[2]), load_char(m[3]), load_char(m[4])];
+  img_bg = loadImage(bgimgs[battle_map]);
 }
 function draw_battle(){
   let d = battele_data;
@@ -220,6 +272,7 @@ function draw_battle(){
     return (x <= click_x && click_x < x + width &&
       y <= click_y && click_y < y + height);
   }
+  image(img_bg, 0, 0, width, height);
   if (battle_mode != 100) {
     textSize(20);
     textAlign(LEFT);
@@ -240,9 +293,9 @@ function draw_battle(){
       textSize(15);
       text('' + card.hp + '/' + card.max_hp, x, y + 20);
       fill(0);
-      image(img_temp[card.imgid], x, y_ + 40, size, size);
+      image(img_temp[card.imgid], x, y_ + 30, size, size);
       if (battle_mode == 0){
-        if( if_rect(x - 15, y_ + 40, size, size)) {
+        if( if_rect(x - 15, y_ + 30, size, size)) {
           mode_card_index = card.org;
           item_use_index = card.org;
           battle_mode = 7;
@@ -253,7 +306,7 @@ function draw_battle(){
     for(let i = 0; i < 4; i++){
       let x_ = 10 + ((width - 20) / 4) * i;
       draw_battele_card(d.teki[i],  x_, 60);
-      draw_battele_card(d.mikata[i], x_, 270);
+      draw_battele_card(d.mikata[i], x_, 200);
     }
   }
   if (battle_mode == 0) {
@@ -261,8 +314,8 @@ function draw_battle(){
     textAlign(CENTER);
     fill(color(150,170,255));
     const bw = ((width - 30) / 2);
-    const bh = 70;
-    const top1 = 460;
+    const bh = 45;
+    const top1 = 360;
     const left2 = 10 + bw + 10;
     const top2 = top1 + bh + 5;
     rect(10, top1, bw, bh);
@@ -272,20 +325,23 @@ function draw_battle(){
     fill(color(150,170,200));
 //    rect(left2, top2, bw, bh);
     fill(50);
-    text('[戦う]', width / 4, 500);
-    text('[オート]', width / 4 * 3, 500);
-    text('[アイテム]', width / 4, 570);
+    text('[戦う]', width / 4, 385);
+    text('[オート]', width / 4 * 3, 385);
+    text('[アイテム]', width / 4, 435);
 //    text('[逃げる(未)]', width / 4 * 3, 570);
     const w = (width - 60) / 2;
-    const h = 70;
-    if( if_rect(10, top1, w, h)) {
+    const h = 45;
+    if (if_rect(10, top1, w, h)) {
       battle_mode = 1;
       battle_count2 = -1;
     }
-    if( if_rect(left2, top1, w, h)) {
+    if (if_rect(left2, top1, w, h)) {
       battle_mode = 2;
     }
-    if( if_rect(10, top2, w, h)) {
+    if (if_rect(10, top2, w, h)) {
+      click_on = -1;
+      click_x = -1;
+      click_y = -1;
       battle_mode = 4;
     }
     if( if_rect(left2, top2, w, h)) {
@@ -297,25 +353,15 @@ function draw_battle(){
       battle_count++;
     }
     if (is_win && battle_count == 60) {
-      const reward = [
-        [1, 1],
-        [2,-2, [2, 2, 2, 2, 2, 2, 2, 1, 9]],
-        [3,-1, [['エルナ', 2], 2], 0],
-        [4,-2, [2, 2, 2, 2, 2, 6, 6, 10]],
-        [5,-2, [2, 6, 7, 8]],
-        [6,-1, [['サーナ', 3], 3], 0],
-        [7,-2, [6, 7, 8]],
-        [8,-2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 5]]
-      ];
       if (reward[battle_map][1] == -1){
         let z = reward[battle_map][2];
-        let charc = z[0];
-        let name = charc[1];
-        let char_idx = z[1];
-        if (mikata_data[char_idx][1] != name) {
-          mikata_data[char_idx] = charc;
-          item_use_index  = char_idx;
-          mode_card_index =char_idx;
+        let char_name = z[0];
+        let card_idx = z[1];
+        let char_idx = z[2];
+        if (mikata_data[char_idx][1] != card_idx) {
+          mikata_data[char_idx] = [char_name, card_idx];
+          item_use_index  = card_idx;
+          mode_card_index =card_idx;
           battle_mode = 8;
         }else{
           let item_index = reward[battle_map][3];
@@ -345,13 +391,13 @@ function draw_battle(){
       textSize(20);
       textAlign(CENTER);
       fill(color(150,170,255));
-      rect(30, 540, width - 60, 70);
+      rect(30, 370, width - 60, 70);
       fill(50);
-      text(is_win ? '[次へ]' : '[再戦]', width / 2, 580);
-      if (if_rect(30, 540, width - 60, 70)) {
+      text(is_win ? '[次へ]' : '[再戦]', width / 2, 410);
+      if (if_rect(30, 385, width - 60, 70)) {
         if (is_win) {
           battle_map++;
-          if(battle_map == 8){ // 最後の面
+          if(battle_map == battle_map_cards.length){ // 最後の面
             click_on = -1;
             battle_mode = 100;
             battle_count = 0;
@@ -423,7 +469,7 @@ function draw_battle(){
         t.add_y = 10;
         effect_on = 0;
         effect_x = 10 + (target + 1) * ((width - 20 - 6)　/ 4);
-        effect_y = turn_mode ? 110 : 320;
+        effect_y = turn_mode ? 140 - 30 : 290 - 30;
         let damage = parseInt(Math.max(5, a.attack - t.def));
         let hit_base = 70 + (a.hit - t.agi) / 2;
         let hit_per = Math.max(10, Math.min(95, hit_base));
@@ -450,12 +496,12 @@ function draw_battle(){
           }
         }else{
           text_ = 'miss';
-          colors = '#777';
+          colors = '#bbb';
           battle_text = a.name + 'の攻撃。\n' + t.name + 'は回避した。\n';
         }
         let hit_anime = {
           x:(15 + ((width - 20) / 4) * target),
-          y:turn_mode ? 140: 350,
+          y:turn_mode ? 140: 290,
           text:text_,
           color:colors,
           countdown:55
@@ -493,7 +539,7 @@ function draw_battle(){
     }
     textSize(20);
     textAlign(LEFT);
-    text(battle_text, 40, 500);
+    text(battle_text, 40, 350);
   } else if (battle_mode == 4) {
     // アイテム
     const view_limit = 4;
@@ -533,19 +579,24 @@ function draw_battle(){
             text_str = '';
           }
         }
-        rect(45, 100 + 60 * i, width - 90, 55);
+        let margin_x = 40;
+        let margin_y = 40;
+        let imgsize = 50;
+        let height = imgsize + 6;
+        let text_y = margin_x + height * i + height / 2
+        rect(margin_x, margin_y + height * i, width - margin_y * 2, height - 3);
         fill(0);
         textAlign(LEFT);
         textSize(15);
-        text(text_str, 105, 100 + 60 * i + 30);
+        text(text_str, margin_y + imgsize + 5, text_y);
         textAlign(RIGHT);
-        text(count_str, width - 50, 100 + 60 * i + 30);
+        text(count_str, width - margin_y - 5, text_y);
         if (0 <= card_id) {
-          image(img_temp[card_id], 50, 100 + 60 * i + 2, 55, 50);
+          image(img_temp[card_id], margin_x + 3, margin_y + height * i + 2, imgsize, imgsize);
         }
         let mode_card_view = false;
         let menu_index = -1;
-        if (if_rect(50, 100 + 60 * i, 50, 50)) {
+        if (if_rect(margin_x, margin_y + height * i + 2, imgsize, imgsize)) {
           menu_index = i;
           if(0 <= index){
             item_use_index = index;
@@ -553,7 +604,7 @@ function draw_battle(){
             mode_card_view = true;
           }
         }
-        if (if_rect(100, 100 + 60 * i, width - 90, 55)) {
+        if (if_rect(margin_x, margin_y + height * i, width - margin_y * 2, height)) {
           menu_index = i;
           if(0 <= index){
             item_use_index = index;
@@ -621,7 +672,7 @@ function draw_battle(){
           }
           let hit_anime = {
             x:(15 + ((width - 20) / 4) * target),
-            y:is_teki ? 140: 350,
+            y:is_teki ? 140: 290,
             text:text_,
             color:colors,
             countdown:55
@@ -631,7 +682,7 @@ function draw_battle(){
       }
       textSize(20);
       textAlign(LEFT);
-      text(battle_text, 40, 500);
+      text(battle_text, 40, 350);
       if(70 < battle_count){
         battle_count = 0;
         battle_mode = 0;
@@ -659,8 +710,8 @@ function draw_battle(){
       } else if(battle_mode == 9) {
         card_type = 0;
       }
-      const base_w = width - 40;
-      const base_h = base_w * 1.5;
+      const base_h = height - 30;
+      const base_w = base_h / 1.5;
       const ratio = base_w / 640;
       const base_x = (width - base_w) / 2;
       const base_y = (height - base_h) / 2;
@@ -705,8 +756,8 @@ function draw_battle(){
   }else if (battle_mode == 100) {
     image(img_end, 0, 30, width, height - 60, 0, 0, img_end.width, img_end.height, CONTAIN);
     textSize(15);
-    text_futi('Congratulations!!', width / 2, 100, 255, 0);
-    text_futi('おめでとうございます', width / 2, 120, 255, 0);
+    text_futi('Congratulations!!', width / 2, 50, 255, 0);
+    text_futi('おめでとうございます', width / 2, 70, 255, 0);
   }
   draw_battle_splite();
 }
