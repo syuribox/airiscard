@@ -605,8 +605,7 @@ function draw_battle(){
             mode_card_index = card_id;
             mode_card_view = true;
           }
-        }
-        if (if_rect(margin_x, margin_y + height * i, width - margin_y * 2, height)) {
+        } else if (if_rect(margin_x + imgsize + 4, margin_y + height * i, width - margin_y * 2, height)) {
           menu_index = i;
           if(0 <= index){
             item_use_index = index;
@@ -736,9 +735,12 @@ function draw_battle(){
     if (0 <= click_on) {
       if (battle_mode == 6){
         battle_mode = 4;
+        menu_index = -1;
+        mode_card_index = -1;
+        item_use_index = -1;
       } else if(battle_mode == 7) {
         battle_mode = 0;
-      } else{
+      } else {
         battle_mode = 99;
       }
     }
