@@ -32,6 +32,8 @@ function preload() {
   img_temp[61] = loadImage('./img/061_wolf.png');
   img_temp[62] = loadImage('./img/062_deer.png');
   img_temp[63] = loadImage('./img/063_bear.png');
+  img_temp[64] = loadImage('./img/064_slime.png');
+  img_temp[65] = loadImage('./img/065_rabbit.png');
   img_card[0]  = loadImage('./img/card_base_green.png');
   img_card[1]  = loadImage('./img/card_base_red.png');
 };
