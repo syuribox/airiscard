@@ -218,7 +218,7 @@ function draw() {
   fill(0);
   textSize(12);
   textAlign(LEFT);
-  text('エアイズ王国：カートバトル v0.04.20231202', 30, 14);
+  text('エアイズ王国：カードバトル v0.04.20231202', 30, 14);
   textAlign(CENTER);
   text('copyright 2023 syuribox, Aipictors', width / 2, height - 8);
 }
@@ -230,7 +230,7 @@ function draw_title(){
   const w = width / 2;
   const h = height / 2;
   fill(255);
-  const title_text = 'エアイズ王国　\n　：カートバトル';
+  const title_text = 'エアイズ王国　\n　：カードバトル';
   text(title_text, w -1, h -1);
   text(title_text, w -1, h -0);
   text(title_text, w -1, h +1);
