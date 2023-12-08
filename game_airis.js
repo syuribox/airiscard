@@ -326,7 +326,7 @@ function draw_title() {
   stroke(0);
 }
 let mikata_data = ['', ['マリア', 1], ['黒猫', 4], ['白猫', 5], ['トラ猫', 6]];
-let items = [[2, 3], [6, 1], [8, 99]];
+let items = [[2, 3], [6, 1], [8, 1]];
 let battle_map = 0;
 let battle_mode = 0;
 let battle_count = 0;
