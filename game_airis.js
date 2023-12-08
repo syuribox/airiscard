@@ -108,7 +108,7 @@ const reward = [
   [15, -2, [3, 6, 7, 8]],
   [16, -2, [3, 6, 7, 8]],
   [17, -2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 5]],
-  [18, 12],
+  [18, 11],
 ];
 const card_base = [
   // ★rank name,   img, _hp, at, def,hit agi skill
@@ -326,7 +326,7 @@ function draw_title() {
   stroke(0);
 }
 let mikata_data = ['', ['マリア', 1], ['黒猫', 4], ['白猫', 5], ['トラ猫', 6]];
-let items = [[2, 3], [6, 1], [8, 1]];
+let items = [[2, 3], [6, 1], [8, 99]];
 let battle_map = 0;
 let battle_mode = 0;
 let battle_count = 0;
