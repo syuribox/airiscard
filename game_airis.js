@@ -8,7 +8,7 @@ let img_end;
 let song;
 
 function preload() {
-  img_title = loadImage('./img/title2.png');
+  img_title = loadImage('./img/title.png');
   img_end = loadImage('./img/end.png');
   img_temp[1] = loadImage('./img/001_maria.png');
   img_temp[2] = loadImage('./img/002_enal.png');
@@ -150,9 +150,8 @@ const card_base = [
   ['★4 マミー', 69, 170, 45, 15, 35, 20, [''], 'アンデッドの一種、ミイラ。\n包帯巻きの死体。\nアンデッドの森に生息する。', ['', 'グギャ', 'ギイイ']],
   ['★4 スケルトン', 70, 180, 45, 10, 35, 20, [''], 'アンデッドの一種、骸骨(がいこつ)。\nアンデッドの森に生息する。', ['ガガガガ', 'ギャギャ', 'カタカタカタ']],
   ['★5 サンタ', 71, 250, 45, 30, 40, 20, ['2回攻撃'], 'サンタ・クロース。\nクリスマスに発生する。\n闇に落ちたサンタ。\nクリスマス箱を持ってくる。', ['ひゃほううう', 'メリー、クリスマス', 'いい子にしていたかな？']],
-  ['★4 ブレッドマン', 72, 210, 45, 20, 35, 20, [''], 'ジンジャー・ブレッドマン。\nクリスマスに発生する。人型のクッキーだ。', ['美味しいよ', '甘いよ', '食べないでぇ']],
+  ['★4 ブレッドマン', 72, 210, 45, 20, 35, 20, [''], 'ジンジャー・ブレッドマン。\nクリスマスに発生する。\n人型のクッキーだ。', ['美味しいよ', '甘いよ', '食べないでぇ']],
   ['★4 スノーマン', 73, 220, 45, 20, 40, 30, [''], '雪ダルマ。\n冬になるとやってくる。\n寒い、寒いよう。', ['ほっほっほー', 'ひっひっひー', 'らっらっらー']],
-  
 ];
 const battle_map_cards = [
   ['1-1.エルナ邸の裏庭(1)', ['薬草', 51],['雑草A', 50], ['雑草B', 50], ['雑草C', 50]],
@@ -216,7 +215,7 @@ const items_data = [
   ['★4 巻物【火】', 57, ['全体攻撃', 120], '120固定全体ダメージ。\n紅蓮の炎で焼き尽くす。\n「フレイム・インフェルノ」'],
   ['★1 リンゴ', 40, ['回復', 60], 'HPを60回復する。\n赤く熟しているリンゴ。\n美味しそうな、いい匂い。'],
   ['★5 黄金リンゴ', 41, ['蘇生', 100], 'HPを100回復する。\n戦闘不能から復帰する。\n見た目は普通だが珍しい黄金のリンゴ。'],
-  ['★5 クリスマス箱', 42, ['蘇生', 120], 'HPを120回復する。\n戦闘不能から復帰する。\nメリークリスマス。\nクリスマス・ボックスだ。'],
+  ['★5 クリスマス箱', 42, ['蘇生', 120], 'HPを120回復する。\n戦闘不能から復帰する。\nメリー、クリスマス。\nクリスマス・ボックスだ。\nサンタさんからのプレゼント。'],
 ];
 let click_on = -1;
 let click_off = -1;
@@ -299,6 +298,7 @@ function draw_logo() {
   }
 }
 let set_music = false;
+let draw_title_count = 0;
 
 function draw_title() {
   if (!set_music) {
@@ -308,7 +308,19 @@ function draw_title() {
   }
   textSize(35);
   textAlign(CENTER);
-  image(img_title, 0, 15, width, height - 20, 0, 0, img_title.width, img_title.height, CONTAIN);
+  let pos = 0;
+  draw_title_count++;
+  const move = 880;
+  const t = draw_title_count / 8;
+  if (t < move) {
+    pos = t;
+  } else if (t < move*2) {
+    pos = move - (t - move);
+  } else {
+    draw_title_count = 0;
+  }
+  const height_per = height / img_title.height;
+  image(img_title, 0, 0, width, height, pos, 0, img_title.width * height_per, img_title.height, CONTAIN);
   const w = width / 2;
   const h = height / 2;
   fill(0);
