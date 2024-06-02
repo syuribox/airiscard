@@ -274,7 +274,7 @@ function draw() {
   fill(0);
   textSize(12);
   textAlign(LEFT);
-  text('エアイズ王国：カードバトル v0.09.20231215b', 30, 14);
+  text('エアイズ王国：カードバトル v0.09.20240603', 30, 14);
   textAlign(CENTER);
   text('copyright 2023 syuribox, Aipictors', width / 2, height - 8);
 }
